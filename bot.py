@@ -50,7 +50,7 @@ class Diamore:
         minutes, seconds = divmod(remainder, 60)
         return f"{int(hours):02}:{int(minutes):02}:{int(seconds):02}"
         
-    def user_visit(self, query: str):
+    def user_visit(self, query: str, retries=3):
         url = "https://diamore-propd.smart-ui.pro/user/visit"
         self.headers.update({
             'Content-Type': 'application/json',
@@ -58,17 +58,34 @@ class Diamore:
             'Authorization': f'Token {query}'
         })
 
-        response = self.session.post(url, headers=self.headers)
-        if response.status_code == 201:
-            result = response.json()
-            if result["message"] == "ok":
-                return result
-            else:
-                return None
-        else:
-            return None
+        attempt = 0
+        while attempt < retries:
+            try:
+                response = self.session.post(url, headers=self.headers, timeout=10)
+                response.raise_for_status()
+                if response.status_code == 201:
+                    result = response.json()
+                    if result["message"] == "ok":
+                        return result
+                    else:
+                        return None
+                else:
+                    return None
+            except (requests.RequestException, requests.Timeout, requests.ConnectionError) as e:
+                print(
+                    f"{Fore.CYAN + Style.BRIGHT}[ {datetime.now().astimezone(wib).strftime('%x %X %Z')} ]{Style.RESET_ALL}"
+                    f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
+                    f"{Fore.RED + Style.BRIGHT}Request Timeout.{Style.RESET_ALL}"
+                    f"{Fore.WHITE + Style.BRIGHT} Retrying {attempt+1}/{retries} {Style.RESET_ALL}",
+                    end="\r",
+                    flush=True
+                )
+            attempt += 1
+            time.sleep(2)
+
+        return None
         
-    def user_info(self, query: str):
+    def user_info(self, query: str, retries=3):
         url = "https://diamore-propd.smart-ui.pro/user"
         self.headers.update({
             'Content-Type': 'application/json',
@@ -76,13 +93,30 @@ class Diamore:
             'Authorization': f'Token {query}'
         })
 
-        response = self.session.get(url, headers=self.headers)
-        if response.status_code == 200:
-            return response.json()
-        else:
-            return None
+        attempt = 0
+        while attempt < retries:
+            try:
+                response = self.session.get(url, headers=self.headers, timeout=10)
+                response.raise_for_status()
+                if response.status_code == 200:
+                    return response.json()
+                else:
+                    return None
+            except (requests.RequestException, requests.Timeout, requests.ConnectionError) as e:
+                print(
+                    f"{Fore.CYAN + Style.BRIGHT}[ {datetime.now().astimezone(wib).strftime('%x %X %Z')} ]{Style.RESET_ALL}"
+                    f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
+                    f"{Fore.RED + Style.BRIGHT}Request Timeout.{Style.RESET_ALL}"
+                    f"{Fore.WHITE + Style.BRIGHT} Retrying {attempt+1}/{retries} {Style.RESET_ALL}",
+                    end="\r",
+                    flush=True
+                )
+            attempt += 1
+            time.sleep(2)
+
+        return None
     
-    def daily(self, query: str):
+    def daily(self, query: str, retries=3):
         url = "https://diamore-propd.smart-ui.pro/daily/rewards"
         self.headers.update({
             'Content-Type': 'application/json',
@@ -90,13 +124,30 @@ class Diamore:
             'Authorization': f'Token {query}'
         })
 
-        response = self.session.get(url, headers=self.headers)
-        if response.status_code == 200:
-            return response.json()
-        else:
-            return None
+        attempt = 0
+        while attempt < retries:
+            try:
+                response = self.session.get(url, headers=self.headers, timeout=10)
+                response.raise_for_status()
+                if response.status_code == 200:
+                    return response.json()
+                else:
+                    return None
+            except (requests.RequestException, requests.Timeout, requests.ConnectionError) as e:
+                print(
+                    f"{Fore.CYAN + Style.BRIGHT}[ {datetime.now().astimezone(wib).strftime('%x %X %Z')} ]{Style.RESET_ALL}"
+                    f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
+                    f"{Fore.RED + Style.BRIGHT}Request Timeout.{Style.RESET_ALL}"
+                    f"{Fore.WHITE + Style.BRIGHT} Retrying {attempt+1}/{retries} {Style.RESET_ALL}",
+                    end="\r",
+                    flush=True
+                )
+            attempt += 1
+            time.sleep(2)
+
+        return None
     
-    def claim_daily(self, query: str):
+    def claim_daily(self, query: str, retries=3):
         url = "https://diamore-propd.smart-ui.pro/daily/claim"
         self.headers.update({
             'Content-Type': 'application/json',
@@ -104,17 +155,37 @@ class Diamore:
             'Authorization': f'Token {query}'
         })
 
-        response = self.session.post(url, headers=self.headers)
-        if response.status_code == 201:
-            result = response.json()
-            if result["message"] == "ok":
-                return result
-            else:
-                return None
-        else:
-            return None
+        attempt = 0
+        while attempt < retries:
+            try:
+                response = self.session.post(url, headers=self.headers, timeout=10)
+                if response.status_code == 429:
+                    return
+                
+                response.raise_for_status()
+                if response.status_code == 201:
+                    result = response.json()
+                    if result["message"] == "ok":
+                        return result
+                    else:
+                        return None
+                else:
+                    return None
+            except (requests.RequestException, requests.Timeout, requests.ConnectionError) as e:
+                print(
+                    f"{Fore.CYAN + Style.BRIGHT}[ {datetime.now().astimezone(wib).strftime('%x %X %Z')} ]{Style.RESET_ALL}"
+                    f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
+                    f"{Fore.RED + Style.BRIGHT}Request Timeout.{Style.RESET_ALL}"
+                    f"{Fore.WHITE + Style.BRIGHT} Retrying {attempt+1}/{retries} {Style.RESET_ALL}",
+                    end="\r",
+                    flush=True
+                )
+            attempt += 1
+            time.sleep(2)
+
+        return None
     
-    def refferal(self, query: str):
+    def refferal(self, query: str, retries=3):
         url = "https://diamore-propd.smart-ui.pro/referral/recruits/"
         self.headers.update({
             'Content-Type': 'application/json',
@@ -122,13 +193,30 @@ class Diamore:
             'Authorization': f'Token {query}'
         })
 
-        response = self.session.get(url, headers=self.headers)
-        if response.status_code == 200:
-            return response.json()
-        else:
-            return None
+        attempt = 0
+        while attempt < retries:
+            try:
+                response = self.session.get(url, headers=self.headers, timeout=10)
+                response.raise_for_status()
+                if response.status_code == 200:
+                    return response.json()
+                else:
+                    return None
+            except (requests.RequestException, requests.Timeout, requests.ConnectionError) as e:
+                print(
+                    f"{Fore.CYAN + Style.BRIGHT}[ {datetime.now().astimezone(wib).strftime('%x %X %Z')} ]{Style.RESET_ALL}"
+                    f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
+                    f"{Fore.RED + Style.BRIGHT}Request Timeout.{Style.RESET_ALL}"
+                    f"{Fore.WHITE + Style.BRIGHT} Retrying {attempt+1}/{retries} {Style.RESET_ALL}",
+                    end="\r",
+                    flush=True
+                )
+            attempt += 1
+            time.sleep(2)
+
+        return None
     
-    def claim_refferal(self, query: str):
+    def claim_refferal(self, query: str, retries=3):
         url = "https://diamore-propd.smart-ui.pro/referral/claim"
         self.headers.update({
             'Content-Type': 'application/json',
@@ -136,17 +224,37 @@ class Diamore:
             'Authorization': f'Token {query}'
         })
 
-        response = self.session.post(url, headers=self.headers)
-        if response.status_code == 201:
-            result = response.json()
-            if result["message"] == "Bonuses claimed":
-                return result
-            else:
-                return None
-        else:
-            return None
+        attempt = 0
+        while attempt < retries:
+            try:
+                response = self.session.post(url, headers=self.headers, timeout=10)
+                if response.status_code == 429:
+                    return
+                
+                response.raise_for_status()
+                if response.status_code == 201:
+                    result = response.json()
+                    if result["message"] == "Bonuses claimed":
+                        return result
+                    else:
+                        return None
+                else:
+                    return None
+            except (requests.RequestException, requests.Timeout, requests.ConnectionError) as e:
+                print(
+                    f"{Fore.CYAN + Style.BRIGHT}[ {datetime.now().astimezone(wib).strftime('%x %X %Z')} ]{Style.RESET_ALL}"
+                    f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
+                    f"{Fore.RED + Style.BRIGHT}Request Timeout.{Style.RESET_ALL}"
+                    f"{Fore.WHITE + Style.BRIGHT} Retrying {attempt+1}/{retries} {Style.RESET_ALL}",
+                    end="\r",
+                    flush=True
+                )
+            attempt += 1
+            time.sleep(2)
+
+        return None
     
-    def taps(self, query: str, point: str):
+    def taps(self, query: str, point: str, retries=3):
         url = "https://diamore-propd.smart-ui.pro/taps/claim"
         data = json.dumps({ 'amount': str(point) })
         self.headers.update({
@@ -154,17 +262,37 @@ class Diamore:
             'Authorization': f'Token {query}'
         })
 
-        response = self.session.post(url, headers=self.headers, data=data)
-        if response.status_code == 201:
-            result = response.json()
-            if result["message"] == "Taps claimed":
-                return result
-            else:
-                return None
-        else:
-            return None
+        attempt = 0
+        while attempt < retries:
+            try:
+                response = self.session.post(url, headers=self.headers, data=data, timeout=10)
+                if response.status_code == 429:
+                    return
+                
+                response.raise_for_status()
+                if response.status_code == 201:
+                    result = response.json()
+                    if result["message"] == "Taps claimed":
+                        return result
+                    else:
+                        return None
+                else:
+                    return None
+            except (requests.RequestException, requests.Timeout, requests.ConnectionError) as e:
+                print(
+                    f"{Fore.CYAN + Style.BRIGHT}[ {datetime.now().astimezone(wib).strftime('%x %X %Z')} ]{Style.RESET_ALL}"
+                    f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
+                    f"{Fore.RED + Style.BRIGHT}Request Timeout.{Style.RESET_ALL}"
+                    f"{Fore.WHITE + Style.BRIGHT} Retrying {attempt+1}/{retries} {Style.RESET_ALL}",
+                    end="\r",
+                    flush=True
+                )
+            attempt += 1
+            time.sleep(2)
+
+        return None
     
-    def ads(self, query: str):
+    def ads(self, query: str, retries=3):
         url = "https://diamore-propd.smart-ui.pro/ads"
         self.headers.update({
             'Content-Type': 'application/json',
@@ -172,13 +300,33 @@ class Diamore:
             'Authorization': f'Token {query}'
         })
 
-        response = self.session.get(url, headers=self.headers)
-        if response.status_code == 200:
-            return response.json()
-        else:
-            return None
+        attempt = 0
+        while attempt < retries:
+            try:
+                response = self.session.get(url, headers=self.headers, timeout=10)
+                if response.status_code == 429:
+                    return
+                
+                response.raise_for_status()
+                if response.status_code == 200:
+                    return response.json()
+                else:
+                    return None
+            except (requests.RequestException, requests.Timeout, requests.ConnectionError) as e:
+                print(
+                    f"{Fore.CYAN + Style.BRIGHT}[ {datetime.now().astimezone(wib).strftime('%x %X %Z')} ]{Style.RESET_ALL}"
+                    f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
+                    f"{Fore.RED + Style.BRIGHT}Request Timeout.{Style.RESET_ALL}"
+                    f"{Fore.WHITE + Style.BRIGHT} Retrying {attempt+1}/{retries} {Style.RESET_ALL}",
+                    end="\r",
+                    flush=True
+                )
+            attempt += 1
+            time.sleep(2)
+
+        return None
     
-    def watch_ads(self, query: str):
+    def watch_ads(self, query: str, retries=3):
         url = "https://diamore-propd.smart-ui.pro/ads/watch"
         data = json.dumps({ 'type': 'adsgram' })
         self.headers.update({
@@ -186,17 +334,37 @@ class Diamore:
             'Authorization': f'Token {query}'
         })
 
-        response = self.session.post(url, headers=self.headers, data=data)
-        if response.status_code == 201:
-            result = response.json()
-            if result["message"] == "Ad bonus applied!":
-                return result
-            else:
-                return None
-        else:
-            return None
+        attempt = 0
+        while attempt < retries:
+            try:
+                response = self.session.post(url, headers=self.headers, data=data, timeout=10)
+                if response.status_code == 429:
+                    return
+                
+                response.raise_for_status()
+                if response.status_code == 201:
+                    result = response.json()
+                    if result["message"] == "Ad bonus applied!":
+                        return result
+                    else:
+                        return None
+                else:
+                    return None
+            except (requests.RequestException, requests.Timeout, requests.ConnectionError) as e:
+                print(
+                    f"{Fore.CYAN + Style.BRIGHT}[ {datetime.now().astimezone(wib).strftime('%x %X %Z')} ]{Style.RESET_ALL}"
+                    f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
+                    f"{Fore.RED + Style.BRIGHT}Request Timeout.{Style.RESET_ALL}"
+                    f"{Fore.WHITE + Style.BRIGHT} Retrying {attempt+1}/{retries} {Style.RESET_ALL}",
+                    end="\r",
+                    flush=True
+                )
+            attempt += 1
+            time.sleep(2)
+
+        return None
     
-    def quests(self, query: str):
+    def quests(self, query: str, retries=3):
         url = "https://diamore-propd.smart-ui.pro/quests"
         self.headers.update({
             'Content-Type': 'application/json',
@@ -204,13 +372,30 @@ class Diamore:
             'Authorization': f'Token {query}'
         })
 
-        response = self.session.get(url, headers=self.headers)
-        if response.status_code == 200:
-            return response.json()
-        else:
-            return None
+        attempt = 0
+        while attempt < retries:
+            try:
+                response = self.session.get(url, headers=self.headers, timeout=10)
+                response.raise_for_status()
+                if response.status_code == 200:
+                    return response.json()
+                else:
+                    return None
+            except (requests.RequestException, requests.Timeout, requests.ConnectionError) as e:
+                print(
+                    f"{Fore.CYAN + Style.BRIGHT}[ {datetime.now().astimezone(wib).strftime('%x %X %Z')} ]{Style.RESET_ALL}"
+                    f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
+                    f"{Fore.RED + Style.BRIGHT}Request Timeout.{Style.RESET_ALL}"
+                    f"{Fore.WHITE + Style.BRIGHT} Retrying {attempt+1}/{retries} {Style.RESET_ALL}",
+                    end="\r",
+                    flush=True
+                )
+            attempt += 1
+            time.sleep(2)
+
+        return None
     
-    def complete_quests(self, query: str, quest_name: str, reward: str, reward_icon: str, retries=3, delay=2):
+    def complete_quests(self, query: str, quest_name: str, reward: str, reward_icon: str, retries=3):
         url = "https://diamore-propd.smart-ui.pro/quests/finish"
         data = json.dumps({ 'questName': quest_name })
         self.headers.update({
@@ -218,9 +403,10 @@ class Diamore:
             'Authorization': f'Token {query}'
         })
 
-        for attempt in range(1, retries + 1):
+        attempt = 0
+        while attempt < retries:
             try:
-                response = self.session.post(url, headers=self.headers, data=data)
+                response = self.session.post(url, headers=self.headers, data=data, timeout=10)
 
                 if response.status_code == 504:
                     print(
@@ -232,11 +418,10 @@ class Diamore:
                         end="\r",
                         flush=True
                     )
-                    time.sleep(delay)
+                    time.sleep(2)
                     continue
-
+                
                 result = response.json()
-
                 if result["message"] == "Quest marked as finished":
                     self.log(
                         f"{Fore.MAGENTA + Style.BRIGHT}[ Quest{Style.RESET_ALL}"
@@ -266,11 +451,19 @@ class Diamore:
                     )
                     return
 
-            except requests.RequestException as e:
-                self.log(f"{Fore.RED + Style.BRIGHT}An error occurred: {e}{Style.RESET_ALL}")
-                return
+            except (requests.RequestException, requests.Timeout, requests.ConnectionError) as e:
+                print(
+                    f"{Fore.CYAN + Style.BRIGHT}[ {datetime.now().astimezone(wib).strftime('%x %X %Z')} ]{Style.RESET_ALL}"
+                    f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
+                    f"{Fore.RED + Style.BRIGHT}Request Timeout.{Style.RESET_ALL}"
+                    f"{Fore.WHITE + Style.BRIGHT} Retrying {attempt+1}/{retries} {Style.RESET_ALL}",
+                    end="\r",
+                    flush=True
+                )
+            attempt += 1
+            time.sleep(2)
 
-        self.log(f"{Fore.RED + Style.BRIGHT}Failed to complete quest {quest_name} after {retries} retries{Style.RESET_ALL}")
+        return None
     
     def process_query(self, query: str):
 
@@ -291,6 +484,7 @@ class Diamore:
                 )
             else:
                 self.log(f"{Fore.YELLOW+Style.BRIGHT}[ User Info Not Found ]{Style.RESET_ALL}")
+            time.sleep(1)
 
             daily = self.daily(query)
             if daily:
@@ -305,6 +499,7 @@ class Diamore:
                     self.log(f"{Fore.YELLOW+Style.BRIGHT}[ Already Check-in Today ]{Style.RESET_ALL}          ")
             else:
                 self.log(f"{Fore.YELLOW+Style.BRIGHT}[ Daily Check-in Not Found ]{Style.RESET_ALL}")
+            time.sleep(1)
 
             refferal = self.refferal(query)
             if refferal:
@@ -325,9 +520,7 @@ class Diamore:
                     self.log(f"{Fore.YELLOW+Style.BRIGHT}[ No Available Refferal Bonus ]{Style.RESET_ALL}")
             else:
                 self.log(f"{Fore.YELLOW+Style.BRIGHT}[ Refferal Not Found ]{Style.RESET_ALL}")
-
-            print(f"{Fore.YELLOW+Style.BRIGHT}[ Do Tap Tap! Wait..... ]{Style.RESET_ALL}", end="\r", flush=True)
-            time.sleep(3)
+            time.sleep(1)
 
             point = 10000
             # point = random.randint(900, 1000)
@@ -336,11 +529,10 @@ class Diamore:
                 self.log(f"{Fore.GREEN+Style.BRIGHT}[ Success Taps ]{Style.RESET_ALL}")
             else:
                 self.log(f"{Fore.YELLOW+Style.BRIGHT}[ No Available Chance to Taps ]{Style.RESET_ALL}")
+            time.sleep(1)
 
             ads = self.ads(query)
             if ads:
-                print(f"{Fore.YELLOW+Style.BRIGHT}[ Getting Ads Info..... ]{Style.RESET_ALL}", end="\r", flush=True)
-                time.sleep(1.5)
                 max_count = ads['total']
                 count = ads['available']
                 if count !=0 :
@@ -351,9 +543,6 @@ class Diamore:
                         if watch_ads:
                             self.log(f"{Fore.YELLOW+Style.BRIGHT}Watching Ads Success{Style.RESET_ALL}")
 
-                        print(f"{Fore.YELLOW+Style.BRIGHT}[ Do Tap Tap! Wait..... ]{Style.RESET_ALL}", end="\r", flush=True)
-                        time.sleep(3)
-                        
                         taps = self.taps(query, point)
                         if taps:
                             self.log(f"{Fore.GREEN+Style.BRIGHT}[ Success Taps ]{Style.RESET_ALL}")
@@ -365,11 +554,10 @@ class Diamore:
                     self.log(f"{Fore.YELLOW+Style.BRIGHT}[ Oh Sorry, Ads have Reached Their Limit ]{Style.RESET_ALL}")
             else:
                 self.log(f"{Fore.YELLOW+Style.BRIGHT}[ Ads Not Found ]{Style.RESET_ALL}")
+            time.sleep(1)
 
             quests = self.quests(query)
             if quests:
-                print(f"{Fore.YELLOW+Style.BRIGHT}[ Checking Quests...... ]{Style.RESET_ALL}", end="\r", flush=True)
-                time.sleep(3)
                 for quest in quests:
                     if quest:
                         quest_name = quest['name']
@@ -382,17 +570,6 @@ class Diamore:
                             reward_icon = "💗"
                         else:
                             reward_icon = ""
-
-                        print(
-                            f"{Fore.YELLOW+Style.BRIGHT}[ Starting Quests...... ]{Style.RESET_ALL}"
-                            f"{Fore.WHITE+Style.BRIGHT} | {Style.RESET_ALL}"
-                            f"{Fore.MAGENTA+Style.BRIGHT}[{Style.RESET_ALL}"
-                            f"{Fore.WHITE+Style.BRIGHT} {quest_name} {Style.RESET_ALL}"
-                            f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
-                            , end="\r"
-                            , flush=True
-                        )
-                        time.sleep(3)
                         
                         self.complete_quests(query, quest_name, reward, reward_icon)
                         
@@ -413,13 +590,14 @@ class Diamore:
                     f"{Fore.GREEN + Style.BRIGHT}Account's Total: {Style.RESET_ALL}"
                     f"{Fore.WHITE + Style.BRIGHT}{len(queries)}{Style.RESET_ALL}"
                 )
-                self.log(f"{Fore.CYAN + Style.BRIGHT}-----------------------------------------------------------------------{Style.RESET_ALL}")
+                self.log(f"{Fore.CYAN + Style.BRIGHT}-{Style.RESET_ALL}"*75)
 
                 for query in queries:
                     query = query.strip()
                     if query:
                         self.process_query(query)
-                        self.log(f"{Fore.CYAN + Style.BRIGHT}-----------------------------------------------------------------------{Style.RESET_ALL}")
+                        self.log(f"{Fore.CYAN + Style.BRIGHT}-{Style.RESET_ALL}"*75)
+                        time.sleep(3)
 
                 seconds = 1800
                 while seconds > 0:
