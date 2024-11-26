@@ -16,8 +16,9 @@ class Diamore:
             'Accept-Language': 'en,en-US;q=0.9',
             'Cache-Control': 'no-cache',
             'Connection': 'keep-alive',
-            'Host': 'diamore-propd.smart-ui.pro',
+            'Host': 'api.diamore.co',
             'Origin': 'https://app.diamore.co',
+            'Pragma': 'no-cache',
             'Referer': 'https://app.diamore.co/',
             'Sec-Fetch-Dest': 'empty',
             'Sec-Fetch-Mode': 'cors',
@@ -51,10 +52,9 @@ class Diamore:
         return f"{int(hours):02}:{int(minutes):02}:{int(seconds):02}"
         
     def user_visit(self, query: str, retries=3):
-        url = "https://diamore-propd.smart-ui.pro/user/visit"
+        url = "https://api.diamore.co/user/visit"
         self.headers.update({
             'Content-Type': 'application/json',
-            'Content-Length': '0',
             'Authorization': f'Token {query}'
         })
 
@@ -63,14 +63,7 @@ class Diamore:
             try:
                 response = self.session.post(url, headers=self.headers, timeout=10)
                 response.raise_for_status()
-                if response.status_code == 201:
-                    result = response.json()
-                    if result["message"] == "ok":
-                        return result
-                    else:
-                        return None
-                else:
-                    return None
+                return response.json()
             except (requests.RequestException, requests.Timeout, requests.ConnectionError) as e:
                 print(
                     f"{Fore.CYAN + Style.BRIGHT}[ {datetime.now().astimezone(wib).strftime('%x %X %Z')} ]{Style.RESET_ALL}"
@@ -86,10 +79,9 @@ class Diamore:
         return None
         
     def user_info(self, query: str, retries=3):
-        url = "https://diamore-propd.smart-ui.pro/user"
+        url = "https://api.diamore.co/user"
         self.headers.update({
             'Content-Type': 'application/json',
-            'Content-Length': '0',
             'Authorization': f'Token {query}'
         })
 
@@ -98,10 +90,7 @@ class Diamore:
             try:
                 response = self.session.get(url, headers=self.headers, timeout=10)
                 response.raise_for_status()
-                if response.status_code == 200:
-                    return response.json()
-                else:
-                    return None
+                return response.json()
             except (requests.RequestException, requests.Timeout, requests.ConnectionError) as e:
                 print(
                     f"{Fore.CYAN + Style.BRIGHT}[ {datetime.now().astimezone(wib).strftime('%x %X %Z')} ]{Style.RESET_ALL}"
@@ -116,11 +105,10 @@ class Diamore:
 
         return None
     
-    def daily(self, query: str, retries=3):
-        url = "https://diamore-propd.smart-ui.pro/daily/rewards"
+    def daily_rewards(self, query: str, retries=3):
+        url = "https://api.diamore.co/daily/rewards"
         self.headers.update({
             'Content-Type': 'application/json',
-            'Content-Length': '0',
             'Authorization': f'Token {query}'
         })
 
@@ -129,10 +117,7 @@ class Diamore:
             try:
                 response = self.session.get(url, headers=self.headers, timeout=10)
                 response.raise_for_status()
-                if response.status_code == 200:
-                    return response.json()
-                else:
-                    return None
+                return response.json()
             except (requests.RequestException, requests.Timeout, requests.ConnectionError) as e:
                 print(
                     f"{Fore.CYAN + Style.BRIGHT}[ {datetime.now().astimezone(wib).strftime('%x %X %Z')} ]{Style.RESET_ALL}"
@@ -148,10 +133,9 @@ class Diamore:
         return None
     
     def claim_daily(self, query: str, retries=3):
-        url = "https://diamore-propd.smart-ui.pro/daily/claim"
+        url = "https://api.diamore.co/daily/claim"
         self.headers.update({
             'Content-Type': 'application/json',
-            'Content-Length': '0',
             'Authorization': f'Token {query}'
         })
 
@@ -160,17 +144,10 @@ class Diamore:
             try:
                 response = self.session.post(url, headers=self.headers, timeout=10)
                 if response.status_code == 429:
-                    return
+                    return None
                 
                 response.raise_for_status()
-                if response.status_code == 201:
-                    result = response.json()
-                    if result["message"] == "ok":
-                        return result
-                    else:
-                        return None
-                else:
-                    return None
+                return response.json()
             except (requests.RequestException, requests.Timeout, requests.ConnectionError) as e:
                 print(
                     f"{Fore.CYAN + Style.BRIGHT}[ {datetime.now().astimezone(wib).strftime('%x %X %Z')} ]{Style.RESET_ALL}"
@@ -185,11 +162,10 @@ class Diamore:
 
         return None
     
-    def refferal(self, query: str, retries=3):
-        url = "https://diamore-propd.smart-ui.pro/referral/recruits/"
+    def refferal_recruits(self, query: str, retries=3):
+        url = "https://api.diamore.co/referral/recruits/"
         self.headers.update({
             'Content-Type': 'application/json',
-            'Content-Length': '0',
             'Authorization': f'Token {query}'
         })
 
@@ -198,10 +174,7 @@ class Diamore:
             try:
                 response = self.session.get(url, headers=self.headers, timeout=10)
                 response.raise_for_status()
-                if response.status_code == 200:
-                    return response.json()
-                else:
-                    return None
+                return response.json()
             except (requests.RequestException, requests.Timeout, requests.ConnectionError) as e:
                 print(
                     f"{Fore.CYAN + Style.BRIGHT}[ {datetime.now().astimezone(wib).strftime('%x %X %Z')} ]{Style.RESET_ALL}"
@@ -217,10 +190,9 @@ class Diamore:
         return None
     
     def claim_refferal(self, query: str, retries=3):
-        url = "https://diamore-propd.smart-ui.pro/referral/claim"
+        url = "https://api.diamore.co/referral/claim"
         self.headers.update({
             'Content-Type': 'application/json',
-            'Content-Length': '0',
             'Authorization': f'Token {query}'
         })
 
@@ -229,17 +201,10 @@ class Diamore:
             try:
                 response = self.session.post(url, headers=self.headers, timeout=10)
                 if response.status_code == 429:
-                    return
+                    return None
                 
                 response.raise_for_status()
-                if response.status_code == 201:
-                    result = response.json()
-                    if result["message"] == "Bonuses claimed":
-                        return result
-                    else:
-                        return None
-                else:
-                    return None
+                return response.json()
             except (requests.RequestException, requests.Timeout, requests.ConnectionError) as e:
                 print(
                     f"{Fore.CYAN + Style.BRIGHT}[ {datetime.now().astimezone(wib).strftime('%x %X %Z')} ]{Style.RESET_ALL}"
@@ -254,9 +219,9 @@ class Diamore:
 
         return None
     
-    def taps(self, query: str, point: str, retries=3):
-        url = "https://diamore-propd.smart-ui.pro/taps/claim"
-        data = json.dumps({ 'amount': str(point) })
+    def claim_taps(self, query: str, retries=3):
+        url = "https://api.diamore.co/taps/claim"
+        data = json.dumps({'amount':'100000'})
         self.headers.update({
             'Content-Type': 'application/json',
             'Authorization': f'Token {query}'
@@ -267,17 +232,10 @@ class Diamore:
             try:
                 response = self.session.post(url, headers=self.headers, data=data, timeout=10)
                 if response.status_code == 429:
-                    return
+                    return None
                 
                 response.raise_for_status()
-                if response.status_code == 201:
-                    result = response.json()
-                    if result["message"] == "Taps claimed":
-                        return result
-                    else:
-                        return None
-                else:
-                    return None
+                return response.json()
             except (requests.RequestException, requests.Timeout, requests.ConnectionError) as e:
                 print(
                     f"{Fore.CYAN + Style.BRIGHT}[ {datetime.now().astimezone(wib).strftime('%x %X %Z')} ]{Style.RESET_ALL}"
@@ -292,11 +250,10 @@ class Diamore:
 
         return None
     
-    def ads(self, query: str, retries=3):
-        url = "https://diamore-propd.smart-ui.pro/ads"
+    def ads_info(self, query: str, retries=3):
+        url = "https://api.diamore.co/ads"
         self.headers.update({
             'Content-Type': 'application/json',
-            'Content-Length': '0',
             'Authorization': f'Token {query}'
         })
 
@@ -305,13 +262,10 @@ class Diamore:
             try:
                 response = self.session.get(url, headers=self.headers, timeout=10)
                 if response.status_code == 429:
-                    return
+                    return None
                 
                 response.raise_for_status()
-                if response.status_code == 200:
-                    return response.json()
-                else:
-                    return None
+                return response.json()
             except (requests.RequestException, requests.Timeout, requests.ConnectionError) as e:
                 print(
                     f"{Fore.CYAN + Style.BRIGHT}[ {datetime.now().astimezone(wib).strftime('%x %X %Z')} ]{Style.RESET_ALL}"
@@ -327,8 +281,8 @@ class Diamore:
         return None
     
     def watch_ads(self, query: str, retries=3):
-        url = "https://diamore-propd.smart-ui.pro/ads/watch"
-        data = json.dumps({ 'type': 'adsgram' })
+        url = "https://api.diamore.co/ads/watch"
+        data = json.dumps({'type':'adsgram'})
         self.headers.update({
             'Content-Type': 'application/json',
             'Authorization': f'Token {query}'
@@ -339,17 +293,10 @@ class Diamore:
             try:
                 response = self.session.post(url, headers=self.headers, data=data, timeout=10)
                 if response.status_code == 429:
-                    return
+                    return None
                 
                 response.raise_for_status()
-                if response.status_code == 201:
-                    result = response.json()
-                    if result["message"] == "Ad bonus applied!":
-                        return result
-                    else:
-                        return None
-                else:
-                    return None
+                return response.json()
             except (requests.RequestException, requests.Timeout, requests.ConnectionError) as e:
                 print(
                     f"{Fore.CYAN + Style.BRIGHT}[ {datetime.now().astimezone(wib).strftime('%x %X %Z')} ]{Style.RESET_ALL}"
@@ -365,10 +312,9 @@ class Diamore:
         return None
     
     def quests(self, query: str, retries=3):
-        url = "https://diamore-propd.smart-ui.pro/quests"
+        url = "https://api.diamore.co/quests"
         self.headers.update({
             'Content-Type': 'application/json',
-            'Content-Length': '0',
             'Authorization': f'Token {query}'
         })
 
@@ -377,10 +323,7 @@ class Diamore:
             try:
                 response = self.session.get(url, headers=self.headers, timeout=10)
                 response.raise_for_status()
-                if response.status_code == 200:
-                    return response.json()
-                else:
-                    return None
+                return response.json()
             except (requests.RequestException, requests.Timeout, requests.ConnectionError) as e:
                 print(
                     f"{Fore.CYAN + Style.BRIGHT}[ {datetime.now().astimezone(wib).strftime('%x %X %Z')} ]{Style.RESET_ALL}"
@@ -395,9 +338,9 @@ class Diamore:
 
         return None
     
-    def complete_quests(self, query: str, quest_name: str, reward: str, reward_icon: str, retries=3):
-        url = "https://diamore-propd.smart-ui.pro/quests/finish"
-        data = json.dumps({ 'questName': quest_name })
+    def finish_quests(self, query: str, quest_name: str, retries=3):
+        url = "https://api.diamore.co/quests/finish"
+        data = json.dumps({'questName':quest_name})
         self.headers.update({
             'Content-Type': 'application/json',
             'Authorization': f'Token {query}'
@@ -407,50 +350,11 @@ class Diamore:
         while attempt < retries:
             try:
                 response = self.session.post(url, headers=self.headers, data=data, timeout=10)
-
-                if response.status_code == 504:
-                    print(
-                        f"{Fore.CYAN + Style.BRIGHT}[ {datetime.now().astimezone(wib).strftime('%x %X %Z')} ]{Style.RESET_ALL}"
-                        f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
-                        f"{Fore.RED + Style.BRIGHT}[ HTTP ERROR ]{Style.RESET_ALL}"
-                        f"{Fore.YELLOW + Style.BRIGHT} Retrying... {Style.RESET_ALL}"
-                        f"{Fore.WHITE + Style.BRIGHT}[{attempt}/{retries}]{Style.RESET_ALL}",
-                        end="\r",
-                        flush=True
-                    )
-                    time.sleep(2)
-                    continue
+                if response.status_code in [400, 404, 409]:
+                    return response.json()
                 
-                result = response.json()
-                if result["message"] == "Quest marked as finished":
-                    self.log(
-                        f"{Fore.MAGENTA + Style.BRIGHT}[ Quest{Style.RESET_ALL}"
-                        f"{Fore.WHITE + Style.BRIGHT} {quest_name} {Style.RESET_ALL}"
-                        f"{Fore.GREEN + Style.BRIGHT}is Completed{Style.RESET_ALL}"
-                        f"{Fore.MAGENTA + Style.BRIGHT} ]{Style.RESET_ALL}"
-                        f"{Fore.WHITE + Style.BRIGHT} | {Style.RESET_ALL}"
-                        f"{Fore.MAGENTA + Style.BRIGHT}[ Reward{Style.RESET_ALL}"
-                        f"{Fore.WHITE + Style.BRIGHT} {reward} {reward_icon} {Style.RESET_ALL}"
-                        f"{Fore.MAGENTA + Style.BRIGHT}]{Style.RESET_ALL}"
-                    )
-                    return
-                elif result["message"] == "Quest can not be completed anymore":
-                    self.log(
-                        f"{Fore.MAGENTA + Style.BRIGHT}[ Quest{Style.RESET_ALL}"
-                        f"{Fore.WHITE + Style.BRIGHT} {quest_name} {Style.RESET_ALL}"
-                        f"{Fore.YELLOW + Style.BRIGHT}Already Completed{Style.RESET_ALL}"
-                        f"{Fore.MAGENTA + Style.BRIGHT} ]{Style.RESET_ALL}"
-                    )
-                    return
-                else:
-                    self.log(
-                        f"{Fore.MAGENTA + Style.BRIGHT}[ Quest{Style.RESET_ALL}"
-                        f"{Fore.WHITE + Style.BRIGHT} {quest_name} {Style.RESET_ALL}"
-                        f"{Fore.RED + Style.BRIGHT}Failed to Complete{Style.RESET_ALL}"
-                        f"{Fore.MAGENTA + Style.BRIGHT} ]{Style.RESET_ALL}"
-                    )
-                    return
-
+                response.raise_for_status()
+                return response.json()
             except (requests.RequestException, requests.Timeout, requests.ConnectionError) as e:
                 print(
                     f"{Fore.CYAN + Style.BRIGHT}[ {datetime.now().astimezone(wib).strftime('%x %X %Z')} ]{Style.RESET_ALL}"
@@ -466,100 +370,177 @@ class Diamore:
         return None
     
     def process_query(self, query: str):
-
         visit = self.user_visit(query)
+        if not visit:
+            self.log(
+                f"{Fore.MAGENTA+Style.BRIGHT}[ Account{Style.RESET_ALL}"
+                f"{Fore.RED+Style.BRIGHT} Query Id Isn't Valid {Style.RESET_ALL}"
+                f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+            )
+            return
+        
         if visit:
             user = self.user_info(query)
+            if not user:
+                self.log(
+                    f"{Fore.MAGENTA+Style.BRIGHT}[ Account{Style.RESET_ALL}"
+                    f"{Fore.YELLOW+Style.BRIGHT} Data Is None {Style.RESET_ALL}"
+                    f"{Fore.MAGENTA+Style.BRIGHT}] [ Reason{Style.RESET_ALL}"
+                    f"{Fore.WHITE+Style.BRIGHT} Diamore Server May Down {Style.RESET_ALL}"
+                    f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                )
+                return
+            
             if user:
                 self.log(
                     f"{Fore.MAGENTA+Style.BRIGHT}[ Account{Style.RESET_ALL}"
                     f"{Fore.WHITE+Style.BRIGHT} {user['first_name']} {Style.RESET_ALL}"
-                    f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
-                    f"{Fore.MAGENTA+Style.BRIGHT}[ Diamond{Style.RESET_ALL}"
+                    f"{Fore.MAGENTA+Style.BRIGHT}] [ Balance{Style.RESET_ALL}"
                     f"{Fore.WHITE+Style.BRIGHT} {user['balance']} 💎 {Style.RESET_ALL}"
-                    f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
-                    f"{Fore.MAGENTA+Style.BRIGHT}[ Pink{Style.RESET_ALL}"
+                    f"{Fore.MAGENTA+Style.BRIGHT}-{Style.RESET_ALL}"
                     f"{Fore.WHITE+Style.BRIGHT} {user['pinkBalance']} 💗 {Style.RESET_ALL}"
                     f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
                 )
-            else:
-                self.log(f"{Fore.YELLOW+Style.BRIGHT}[ User Info Not Found ]{Style.RESET_ALL}")
-            time.sleep(1)
+                time.sleep(1)
 
-            daily = self.daily(query)
-            if daily:
-                claim_daily = self.claim_daily(query)
-                if claim_daily:
-                    self.log(
-                        f"{Fore.GREEN+Style.BRIGHT}[ Check-in{Style.RESET_ALL}"
-                        f"{Fore.WHITE+Style.BRIGHT} {daily['current']} 💎 {Style.RESET_ALL}"
-                        f"{Fore.GREEN+Style.BRIGHT}Claimed ]{Style.RESET_ALL}"
-                    )
-                else:
-                    self.log(f"{Fore.YELLOW+Style.BRIGHT}[ Already Check-in Today ]{Style.RESET_ALL}          ")
-            else:
-                self.log(f"{Fore.YELLOW+Style.BRIGHT}[ Daily Check-in Not Found ]{Style.RESET_ALL}")
-            time.sleep(1)
-
-            refferal = self.refferal(query)
-            if refferal:
-                reward = refferal['totalAvailableBonuses']
-
-                if reward != 0:
-                    claim_refferal = self.claim_refferal(query)
-
-                    if claim_refferal:
+                check_in = self.daily_rewards(query)
+                if check_in:
+                    claim = self.claim_daily(query)
+                    if claim:
                         self.log(
-                            f"{Fore.GREEN+Style.BRIGHT}[ Refferal{Style.RESET_ALL}"
-                            f"{Fore.WHITE+Style.BRIGHT} {reward} 💎 {Style.RESET_ALL}"
-                            f"{Fore.GREEN+Style.BRIGHT}Claimed ]{Style.RESET_ALL}"
+                            f"{Fore.MAGENTA+Style.BRIGHT}[ Check-in{Style.RESET_ALL}"
+                            f"{Fore.GREEN+Style.BRIGHT} Is Claimed {Style.RESET_ALL}"
+                            f"{Fore.MAGENTA+Style.BRIGHT}] [ Reward{Style.RESET_ALL}"
+                            f"{Fore.WHITE+Style.BRIGHT} {check_in['current']} 💎 {Style.RESET_ALL}"
+                            f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
                         )
                     else:
-                        self.log(f"{Fore.YELLOW+Style.BRIGHT}[ Refferal Bonus Already Claimed ]{Style.RESET_ALL}")
+                        self.log(
+                            f"{Fore.MAGENTA+Style.BRIGHT}[ Check-in{Style.RESET_ALL}"
+                            f"{Fore.YELLOW+Style.BRIGHT} Is Already Claimed {Style.RESET_ALL}"
+                            f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                        )
                 else:
-                    self.log(f"{Fore.YELLOW+Style.BRIGHT}[ No Available Refferal Bonus ]{Style.RESET_ALL}")
-            else:
-                self.log(f"{Fore.YELLOW+Style.BRIGHT}[ Refferal Not Found ]{Style.RESET_ALL}")
-            time.sleep(1)
+                    self.log(
+                        f"{Fore.MAGENTA+Style.BRIGHT}[ Check-in{Style.RESET_ALL}"
+                        f"{Fore.RED+Style.BRIGHT} Data Is None {Style.RESET_ALL}"
+                        f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                    )
+                time.sleep(1)
 
-            point = 10000
-            # point = random.randint(900, 1000)
-            taps = self.taps(query, point)
-            if taps:
-                self.log(f"{Fore.GREEN+Style.BRIGHT}[ Success Taps ]{Style.RESET_ALL}")
-            else:
-                self.log(f"{Fore.YELLOW+Style.BRIGHT}[ No Available Chance to Taps ]{Style.RESET_ALL}")
-            time.sleep(1)
-
-            ads = self.ads(query)
-            if ads:
-                max_count = ads['total']
-                count = ads['available']
-                if count !=0 :
-                    self.log(f"{Fore.GREEN+Style.BRIGHT}[ Ads Found! Watching... {count} / {max_count} ]{Style.RESET_ALL}")
-                    time.sleep(3)
-                    while count > 0:
-                        watch_ads = self.watch_ads(query)
-                        if watch_ads:
-                            self.log(f"{Fore.YELLOW+Style.BRIGHT}Watching Ads Success{Style.RESET_ALL}")
-
-                        taps = self.taps(query, point)
-                        if taps:
-                            self.log(f"{Fore.GREEN+Style.BRIGHT}[ Success Taps ]{Style.RESET_ALL}")
+                refferal = self.refferal_recruits(query)
+                if refferal:
+                    reward = refferal['totalAvailableBonuses']
+                    if reward > 0:
+                        claim = self.claim_refferal(query)
+                        if claim:
+                            self.log(
+                                f"{Fore.MAGENTA+Style.BRIGHT}[ Refferal{Style.RESET_ALL}"
+                                f"{Fore.GREEN+Style.BRIGHT} Is Claimed {Style.RESET_ALL}"
+                                f"{Fore.MAGENTA+Style.BRIGHT}] [ Reward{Style.RESET_ALL}"
+                                f"{Fore.WHITE+Style.BRIGHT} {reward} 💎 {Style.RESET_ALL}"
+                                f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                            )
                         else:
-                            self.log(f"{Fore.YELLOW+Style.BRIGHT}[ No Available Chance to Taps ]{Style.RESET_ALL}")
-
-                        count -= 1
+                            self.log(
+                                f"{Fore.MAGENTA+Style.BRIGHT}[ Refferal{Style.RESET_ALL}"
+                                f"{Fore.RED+Style.BRIGHT} Isn't Claimed {Style.RESET_ALL}"
+                                f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                            )
+                    else:
+                        self.log(
+                            f"{Fore.MAGENTA+Style.BRIGHT}[ Refferal{Style.RESET_ALL}"
+                            f"{Fore.YELLOW+Style.BRIGHT} No Available Rewards to Claim {Style.RESET_ALL}"
+                            f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                        )
                 else:
-                    self.log(f"{Fore.YELLOW+Style.BRIGHT}[ Oh Sorry, Ads have Reached Their Limit ]{Style.RESET_ALL}")
-            else:
-                self.log(f"{Fore.YELLOW+Style.BRIGHT}[ Ads Not Found ]{Style.RESET_ALL}")
-            time.sleep(1)
+                    self.log(
+                        f"{Fore.MAGENTA+Style.BRIGHT}[ Refferal{Style.RESET_ALL}"
+                        f"{Fore.RED+Style.BRIGHT} Data Is None {Style.RESET_ALL}"
+                        f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                    )
+                time.sleep(1)
 
-            quests = self.quests(query)
-            if quests:
-                for quest in quests:
-                    if quest:
+                taps = self.claim_taps(query)
+                if taps:
+                    self.log(
+                        f"{Fore.MAGENTA+Style.BRIGHT}[ Tap Tap{Style.RESET_ALL}"
+                        f"{Fore.GREEN+Style.BRIGHT} Is Success {Style.RESET_ALL}"
+                        f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                    )
+                else:
+                    self.log(
+                        f"{Fore.MAGENTA+Style.BRIGHT}[ Tap Tap{Style.RESET_ALL}"
+                        f"{Fore.YELLOW+Style.BRIGHT} No Available Attempt {Style.RESET_ALL}"
+                        f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                    )
+                time.sleep(1)
+
+                ads = self.ads_info(query)
+                if ads:
+                    count = ads['available']
+                    if count > 0 :
+                        while count > 0:
+                            watch_ads = self.watch_ads(query)
+                            if watch_ads:
+                                count -= 1
+                                self.log(
+                                    f"{Fore.MAGENTA+Style.BRIGHT}[ Watch Ads{Style.RESET_ALL}"
+                                    f"{Fore.GREEN+Style.BRIGHT} Is Success {Style.RESET_ALL}"
+                                    f"{Fore.MAGENTA+Style.BRIGHT}] [ Count{Style.RESET_ALL}"
+                                    f"{Fore.WHITE+Style.BRIGHT} {count} Left {Style.RESET_ALL}"
+                                    f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                                )
+                                time.sleep(1)
+
+                                taps = self.claim_taps(query)
+                                if taps:
+                                    self.log(
+                                        f"{Fore.MAGENTA+Style.BRIGHT}[ Tap Tap{Style.RESET_ALL}"
+                                        f"{Fore.GREEN+Style.BRIGHT} Is Success {Style.RESET_ALL}"
+                                        f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                                    )
+                                else:
+                                    self.log(
+                                        f"{Fore.MAGENTA+Style.BRIGHT}[ Tap Tap{Style.RESET_ALL}"
+                                        f"{Fore.YELLOW+Style.BRIGHT} No Available Attempt {Style.RESET_ALL}"
+                                        f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                                    )
+                            
+                            else:
+                                self.log(
+                                    f"{Fore.MAGENTA+Style.BRIGHT}[ Watch Ads{Style.RESET_ALL}"
+                                    f"{Fore.RED+Style.BRIGHT} Isn't Success {Style.RESET_ALL}"
+                                    f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                                )
+                                break
+
+                            time.sleep(1)
+
+                        if count == 0:
+                            self.log(
+                                f"{Fore.MAGENTA+Style.BRIGHT}[ Watch Ads{Style.RESET_ALL}"
+                                f"{Fore.YELLOW+Style.BRIGHT} No Available Attempt {Style.RESET_ALL}"
+                                f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                            )
+                            
+                    else:
+                        self.log(
+                            f"{Fore.MAGENTA+Style.BRIGHT}[ Watch Ads{Style.RESET_ALL}"
+                            f"{Fore.YELLOW+Style.BRIGHT} No Available Attempt {Style.RESET_ALL}"
+                            f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                        )
+                else:
+                    self.log(
+                        f"{Fore.MAGENTA+Style.BRIGHT}[ Ads{Style.RESET_ALL}"
+                        f"{Fore.RED+Style.BRIGHT} Data Is None {Style.RESET_ALL}"
+                        f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                    )
+                time.sleep(1)
+
+                quests = self.quests(query)
+                if quests:
+                    for quest in quests:
                         quest_name = quest['name']
                         type_reward = quest['targetBalance']
                         reward = quest['bonusClicks']
@@ -570,14 +551,48 @@ class Diamore:
                             reward_icon = "💗"
                         else:
                             reward_icon = ""
-                        
-                        self.complete_quests(query, quest_name, reward, reward_icon)
-                        
-                    else:
-                        self.log(f"{Fore.RED+Style.BRIGHT}[ Quests Not Found ]{Style.RESET_ALL}")
-            else:
-                self.log(f"{Fore.RED+Style.BRIGHT}[ Quests Not Found ]{Style.RESET_ALL}")
-    
+
+                        if quest:
+                            finish = self.finish_quests(query, quest_name)
+                            if finish:
+                                message = finish['message']
+                                if message == 'Quest marked as finished':
+                                    self.log(
+                                        f"{Fore.MAGENTA+Style.BRIGHT}[ Task{Style.RESET_ALL}"
+                                        f"{Fore.WHITE+Style.BRIGHT} {quest_name} {Style.RESET_ALL}"
+                                        f"{Fore.GREEN+Style.BRIGHT}Is Completed{Style.RESET_ALL}"
+                                        f"{Fore.MAGENTA+Style.BRIGHT} ] [ Reward{Style.RESET_ALL}"
+                                        f"{Fore.WHITE+Style.BRIGHT} {reward} {reward_icon} {Style.RESET_ALL}"
+                                        f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                                    )
+                                elif message == 'Quest can not be completed anymore':
+                                    self.log(
+                                        f"{Fore.MAGENTA+Style.BRIGHT}[ Task{Style.RESET_ALL}"
+                                        f"{Fore.WHITE+Style.BRIGHT} {quest_name} {Style.RESET_ALL}"
+                                        f"{Fore.YELLOW+Style.BRIGHT}Is Already Completed{Style.RESET_ALL}"
+                                        f"{Fore.MAGENTA+Style.BRIGHT} ]{Style.RESET_ALL}"
+                                    )
+                                else:
+                                    self.log(
+                                        f"{Fore.MAGENTA+Style.BRIGHT}[ Task{Style.RESET_ALL}"
+                                        f"{Fore.WHITE+Style.BRIGHT} {quest_name} {Style.RESET_ALL}"
+                                        f"{Fore.RED+Style.BRIGHT}Isn't Completed{Style.RESET_ALL}"
+                                        f"{Fore.MAGENTA+Style.BRIGHT} ]{Style.RESET_ALL}"
+                                    )
+
+                        else:
+                            self.log(
+                                f"{Fore.MAGENTA+Style.BRIGHT}[ Task{Style.RESET_ALL}"
+                                f"{Fore.RED+Style.BRIGHT} Data Is None {Style.RESET_ALL}"
+                                f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                            )
+                else:
+                    self.log(
+                        f"{Fore.MAGENTA+Style.BRIGHT}[ Task{Style.RESET_ALL}"
+                        f"{Fore.RED+Style.BRIGHT} Data Is None {Style.RESET_ALL}"
+                        f"{Fore.MAGENTA+Style.BRIGHT}]{Style.RESET_ALL}"
+                    )
+
     def main(self):
         try:
             with open('query.txt', 'r') as file:
@@ -617,6 +632,6 @@ class Diamore:
             self.log(f"{Fore.RED + Style.BRIGHT}An error occurred: {e}{Style.RESET_ALL}")
 
 if __name__ == "__main__":
-    diamore = Diamore()
-    diamore.main()
+    bot = Diamore()
+    bot.main()
     
